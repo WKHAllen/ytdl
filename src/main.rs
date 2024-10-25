@@ -33,6 +33,7 @@ fn main() {
     )
     .unwrap();
 
+    #[cfg_attr(not(target_os = "windows"), allow(unused_mut))]
     let mut window_config = WindowBuilder::new()
         .with_always_on_bottom(false)
         .with_always_on_top(false)
