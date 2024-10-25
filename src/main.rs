@@ -17,6 +17,7 @@ mod services;
 
 use crate::components::App;
 use crate::constants::*;
+#[cfg(target_os = "windows")]
 use dioxus::desktop::tao::platform::windows::WindowBuilderExtWindows;
 use dioxus::desktop::tao::window::Icon;
 use dioxus::desktop::{Config, WindowBuilder};
@@ -32,20 +33,22 @@ fn main() {
     )
     .unwrap();
 
-    LaunchBuilder::new()
-        .with_cfg(
-            Config::new()
-                .with_menu(None)
-                .with_disable_context_menu(!DEBUG)
-                .with_icon(icon.clone())
-                .with_window(
-                    WindowBuilder::new()
-                        .with_always_on_bottom(false)
-                        .with_always_on_top(false)
-                        .with_title(WINDOW_TITLE)
-                        .with_window_icon(Some(icon.clone()))
-                        .with_taskbar_icon(Some(icon)),
-                ),
-        )
-        .launch(App);
+    let mut window_config = WindowBuilder::new()
+        .with_always_on_bottom(false)
+        .with_always_on_top(false)
+        .with_title(WINDOW_TITLE)
+        .with_window_icon(Some(icon.clone()));
+
+    #[cfg(target_os = "windows")]
+    {
+        window_config = window_config.with_taskbar_icon(Some(icon.clone()));
+    }
+
+    let launch_config = Config::new()
+        .with_menu(None)
+        .with_disable_context_menu(!DEBUG)
+        .with_icon(icon)
+        .with_window(window_config);
+
+    LaunchBuilder::new().with_cfg(launch_config).launch(App);
 }
