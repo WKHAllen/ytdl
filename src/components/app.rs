@@ -61,6 +61,7 @@ pub fn App() -> Element {
                 },
                 DepFetchStatus::Failed(err) => rsx! {
                     Error {
+                        class: "dep-fetch-status-failed",
                         description: "An error occurred while installing application dependencies:",
                         message: err
                     }

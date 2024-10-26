@@ -2,12 +2,45 @@
   --background-color: #1f1f27;
   --background-color-hover: #2f2f37;
   --background-color-active: #3f3f47;
+
+  --background-color-darker: #17171f;
+  --background-color-lighter: #27272f;
+
   --text-color: white;
+  --text-color-disabled: #afafaf;
+
   --accent-background-color: #002fff;
   --accent-background-color-hover: #0023bc;
   --accent-background-color-active: #001ea2;
+
   --accent-text-color: white;
+
+  --error-color: #cf0000;
+
+  --border-color: #4a4c4f;
+  --standard-border: 1px solid var(--border-color);
+  --focus-border-color: #6a6c6f;
+  --focus-border: 1px solid var(--focus-border-color);
+  --error-border-color: var(--error-color);
+  --error-border: 1px solid var(--error-border-color);
+  --border-radius-small: 2px;
+  --border-radius-medium: 4px;
+  --border-radius-large: 8px;
+
+  --standard-label-size: 0.9em;
+
   --shadow: 0 0 16px #7f7f7f4f !important;
+
+  --padding-small: 4px;
+  --padding-medium: 8px;
+  --padding-large: 16px;
+  --form-padding: var(--padding-medium) 0;
+
+  --text-input-background-color: var(--background-color-darker);
+  --text-input-text-color: var(--text-color);
+  --text-input-text-color-disabled: var(--text-color-disabled);
+  --text-input-border-radius: var(--border-radius-medium);
+
   --downloader-max-width: 600px;
 }
 
@@ -49,6 +82,10 @@ body {
 body {
   display: flex;
   flex-direction: column;
+}
+
+h1 {
+  font-weight: 400;
 }
 
 button.button {
@@ -107,6 +144,54 @@ button.button:active {
   background-color: var(--background-color) !important;
   opacity: 0.5 !important;
   cursor: initial !important;
+}
+
+.control-error {
+  color: var(--error-color);
+  font-size: 0.9em;
+}
+
+.text-input-container {
+  padding: var(--form-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-small);
+}
+
+.text-input {
+  background-color: var(--text-input-background-color);
+  color: var(--text-input-text-color);
+  padding: 6px 7px;
+  border: var(--standard-border);
+  border-radius: var(--text-input-border-radius);
+  outline: none;
+  transition: border 0.1s ease;
+}
+
+.text-input:focus {
+  border: var(--focus-border);
+}
+
+.text-input-invalid,
+.text-input-invalid:focus {
+  border: var(--error-border);
+}
+
+.text-input-container-disabled .text-input {
+  color: var(--text-input-text-color-disabled);
+}
+
+.text-input-label {
+  color: var(--text-color);
+  font-size: var(--standard-label-size);
+}
+
+.text-input-container-disabled .text-input-label {
+  color: var(--text-color-disabled);
+}
+
+.required-mark {
+  color: var(--error-color);
 }
 
 .icon {
@@ -247,7 +332,6 @@ button.button:active {
 }
 
 .error {
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -262,7 +346,7 @@ button.button:active {
 
 .error-message {
   text-align: center;
-  color: red;
+  color: var(--error-color);
   font-family: monospace;
 }
 
@@ -270,11 +354,15 @@ button.button:active {
   flex-grow: 1;
 }
 
+.dep-fetch-status-failed {
+  flex-grow: 1;
+}
+
 .downloader-container {
   flex-grow: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  justify-content: center;
   padding: 16px;
 }
 
@@ -283,4 +371,8 @@ button.button:active {
   display: flex;
   flex-direction: column;
   max-width: var(--downloader-max-width);
+}
+
+.downloader-title {
+  text-align: center;
 }

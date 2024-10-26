@@ -4,7 +4,6 @@
 #![deny(missing_docs)]
 #![warn(unused_mut)]
 #![warn(clippy::missing_docs_in_private_items)]
-#![allow(non_snake_case)]
 #![cfg_attr(
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
@@ -13,6 +12,7 @@
 mod classes;
 mod components;
 mod constants;
+mod hooks;
 mod services;
 
 use crate::components::App;

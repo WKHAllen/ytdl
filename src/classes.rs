@@ -99,6 +99,7 @@ where
 /// Builds a collection of CSS classes.
 macro_rules! classes {
     ( $( $class:expr ),* $(,)? ) => {{
+        #[allow(unused_mut)]
         let mut class = Classes::new();
         $(
             class.add( $class );

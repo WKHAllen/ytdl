@@ -5387,6 +5387,7 @@ dependencies = [
  "const_format",
  "dioxus",
  "image",
+ "rand 0.8.5",
  "reqwest",
  "tokio",
  "winres",

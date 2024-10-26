@@ -1,5 +1,6 @@
 //! UI component for displaying error messages.
 
+use crate::classes::*;
 use dioxus::prelude::*;
 
 /// An error message component.
@@ -9,10 +10,12 @@ pub fn Error(
     description: String,
     /// The error message itself.
     message: String,
+    /// An optional class name for the loading element.
+    class: Option<String>,
 ) -> Element {
     rsx! {
         div {
-            class: "error",
+            class: classes!("error", class),
 
             div {
                 class: "error-description",

@@ -8,6 +8,7 @@ anyhow = "1.0"
 const_format = "0.2"
 dioxus = { version = "0.5", features = ["desktop"] }
 image = "0.25"
+rand = "0.8"
 reqwest = "0.12"
 tokio = { version = "1.41", features = ["full"] }
 
