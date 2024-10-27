@@ -1,6 +1,8 @@
 //! Download orchestration component.
 
-use crate::components::{ContentType, ContentTypeSelector, OutputDirectorySelector, TextInput};
+use crate::components::{
+    Button, ContentType, ContentTypeSelector, OutputDirectorySelector, TextInput,
+};
 use dioxus::prelude::*;
 
 /// Download configuration and trigger component.
@@ -36,7 +38,6 @@ pub fn Downloader() -> Element {
                     state: video_url,
                     label: "Video URL",
                     placeholder: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-                    required: true,
                 }
 
                 ContentTypeSelector {
@@ -45,6 +46,18 @@ pub fn Downloader() -> Element {
 
                 OutputDirectorySelector {
                     state: output_directory,
+                }
+
+                div {
+                    class: "download-button-container",
+
+                    Button {
+                        text: "Download",
+                        class: "download-button",
+                        onclick: move |_| {
+                            println!("button clicked");
+                        },
+                    }
                 }
             }
         }

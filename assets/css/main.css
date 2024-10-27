@@ -34,7 +34,7 @@
   --padding-small: 4px;
   --padding-medium: 8px;
   --padding-large: 16px;
-  --form-padding: var(--padding-medium) 0;
+  --form-padding: 12px 0;
 
   --text-input-background-color: var(--background-color-darker);
   --text-input-text-color: var(--text-color);
@@ -88,7 +88,7 @@ h1 {
   font-weight: 400;
 }
 
-button.button {
+.button {
   background-color: var(--accent-background-color);
   color: var(--accent-text-color);
   border-radius: 100vw;
@@ -100,11 +100,11 @@ button.button {
   cursor: pointer;
 }
 
-button.button:hover {
+.button:hover {
   background-color: var(--accent-background-color-hover);
 }
 
-button.button:active {
+.button:active {
   background-color: var(--accent-background-color-active);
 }
 
@@ -457,4 +457,14 @@ button.button:active {
 
 input[type="file"].output-directory-selector-input {
   display: none;
+}
+
+.download-button-container {
+  display: flex;
+  padding: var(--form-padding);
+}
+
+.download-button {
+  flex-grow: 1;
+  font-size: 1.125em;
 }
