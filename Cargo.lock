@@ -5386,6 +5386,7 @@ dependencies = [
  "anyhow",
  "const_format",
  "dioxus",
+ "home",
  "image",
  "rand 0.8.5",
  "reqwest",

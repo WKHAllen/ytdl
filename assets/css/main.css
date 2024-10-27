@@ -111,6 +111,7 @@ button.button:active {
 .primary {
   background-color: var(--accent-background-color) !important;
   color: var(--accent-text-color) !important;
+  transition: background-color 0.2s ease;
 }
 
 .primary:hover {
@@ -130,6 +131,7 @@ button.button:active {
 .secondary {
   background-color: var(--background-color) !important;
   color: var(--text-color) !important;
+  transition: background-color 0.2s ease;
 }
 
 .secondary:hover {
@@ -415,4 +417,44 @@ button.button:active {
 
 .content-type-selector-option-selected {
   background-color: var(--accent-background-color);
+}
+
+.output-directory-selector-container {
+  padding: var(--form-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-small);
+}
+
+.output-directory-selector-label {
+  color: var(--text-color);
+  font-size: var(--standard-label-size);
+}
+
+.output-directory-selector {
+  display: flex;
+  flex-direction: row;
+}
+
+.output-directory-selector-display {
+  font-size: 0.9em;
+  flex-grow: 1;
+  border: var(--standard-border);
+  border-right: 0;
+  border-radius: var(--border-radius-medium) 0px 0px var(--border-radius-medium);
+  padding: 6px 7px;
+  display: flex;
+  align-items: center;
+  color: #ccc;
+}
+
+.output-directory-selector-button {
+  flex-grow: 0;
+  padding: 6px 12px;
+  border-radius: 0px var(--border-radius-medium) var(--border-radius-medium) 0px;
+  cursor: pointer;
+}
+
+input[type="file"].output-directory-selector-input {
+  display: none;
 }
