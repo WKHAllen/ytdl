@@ -376,3 +376,43 @@ button.button:active {
 .downloader-title {
   text-align: center;
 }
+
+.content-type-selector-container {
+  padding: var(--form-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-small);
+}
+
+.content-type-selector-label {
+  color: var(--text-color);
+  font-size: var(--standard-label-size);
+}
+
+.content-type-selector {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+
+.content-type-selector-option {
+  flex: 1;
+  text-align: center;
+  padding: 4px 12px;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: var(--background-color-lighter);
+  transition: background-color 0.2s ease;
+}
+
+.content-type-selector-option:first-child {
+  border-radius: 100vmax 0px 0px 100vmax;
+}
+
+.content-type-selector-option:last-child {
+  border-radius: 0px 100vmax 100vmax 0px;
+}
+
+.content-type-selector-option-selected {
+  background-color: var(--accent-background-color);
+}
