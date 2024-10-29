@@ -1,15 +1,11 @@
 //! Download orchestration component.
 
-use crate::components::{Button, ContentTypeSelector, OutputDirectorySelector, TextInput};
-use crate::services::download;
+use crate::components::{
+    Button, ButtonStyle, ContentTypeSelector, OutputDirectorySelector, TextInput,
+};
+use crate::services::{download, parse_video_url};
 use crate::types::*;
 use dioxus::prelude::*;
-
-/// Parses and returns the ID portion of a youtube video URL.
-fn parse_video_id(video_id: String) -> Option<String> {
-    // TODO: do this right
-    video_id.split("v=").last().map(ToOwned::to_owned)
-}
 
 /// The status of a download operation.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
@@ -28,7 +24,7 @@ enum DownloadStatus {
 /// Download configuration and trigger component.
 #[component]
 pub fn Downloader() -> Element {
-    let video_url = use_signal(String::new);
+    let video_url = use_signal(|| "https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_owned());
     let content_type = use_signal(|| ContentType::Video);
     let output_directory = use_signal(|| {
         home::home_dir().map(|path| {
@@ -43,11 +39,24 @@ pub fn Downloader() -> Element {
     });
     let mut status = use_signal(DownloadStatus::default);
 
+    let video_url_value = video_url();
+    let video_id = parse_video_url(&video_url_value);
+    let video_url_error = if video_url_value.is_empty() {
+        Some("No URL provided".to_owned())
+    } else {
+        video_id.is_none().then(|| "Invalid YouTube URL".to_owned())
+    };
+
+    let allow_download = video_id.is_some()
+        && output_directory().is_some()
+        && !matches!(status(), DownloadStatus::Running);
+
     let perform_download = move |_| {
+        let video_id = video_id.clone();
         spawn(async move {
             status.set(DownloadStatus::Running);
 
-            let video_id = match parse_video_id(video_url()) {
+            let video_id = match video_id {
                 Some(video_id) => video_id,
                 None => {
                     status.set(DownloadStatus::Failure(
@@ -66,6 +75,7 @@ pub fn Downloader() -> Element {
                     return;
                 }
             };
+
             let res = download(&video_id, content_type(), &output_dir).await;
 
             match res {
@@ -100,6 +110,7 @@ pub fn Downloader() -> Element {
                     state: video_url,
                     label: "Video URL",
                     placeholder: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                    error: video_url_error,
                 }
 
                 ContentTypeSelector {
@@ -116,7 +127,8 @@ pub fn Downloader() -> Element {
                     Button {
                         text: "Download",
                         class: "download-button",
-                        disabled: matches!(status(), DownloadStatus::Running),
+                        style: ButtonStyle::Primary,
+                        disabled: !allow_download,
                         onclick: perform_download,
                     }
                 }

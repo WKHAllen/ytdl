@@ -1,5 +1,6 @@
 //! UI component for selecting an output directory.
 
+use crate::components::ControlError;
 use crate::hooks::*;
 use dioxus::prelude::*;
 use std::path::PathBuf;
@@ -15,6 +16,9 @@ pub fn OutputDirectorySelector(
         Some(path) => path.display().to_string(),
         None => "No output directory selected".to_owned(),
     };
+    let error = state()
+        .is_none()
+        .then(|| "No output directory selected".to_owned());
 
     rsx! {
         div {
@@ -52,6 +56,10 @@ pub fn OutputDirectorySelector(
                         }
                     }
                 }
+            }
+
+            ControlError {
+                message: error
             }
         }
     }
