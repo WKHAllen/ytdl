@@ -1,9 +1,9 @@
 //! Application services.
 
 mod download;
-mod fetch_youtube_dl;
+mod fetch_deps;
 mod parse_url;
 
 pub use download::*;
-pub use fetch_youtube_dl::*;
+pub use fetch_deps::*;
 pub use parse_url::*;

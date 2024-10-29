@@ -1,5 +1,6 @@
 //! API interfacing with the youtube-dl binary.
 
+use crate::constants::YOUTUBE_DL_BINARY_NAME;
 use crate::types::*;
 use anyhow::Result;
 use image::ImageReader;
@@ -33,7 +34,7 @@ async fn video_title(video_id: &str) -> Result<String> {
     let current = current_exe()?;
     let here = current.parent().unwrap_or(Path::new("."));
 
-    let res = Command::new("youtube-dl")
+    let res = Command::new(YOUTUBE_DL_BINARY_NAME)
         .arg("--get-title")
         .arg(video_id)
         .current_dir(here)
@@ -58,7 +59,7 @@ async fn download_thumbnail(video_id: &str, output_directory: &Path) -> Result<P
     let video_name = video_title(video_id).await?;
     let output_path = output_directory.join(format!("{}.png", video_name));
 
-    let res = Command::new("youtube-dl")
+    let res = Command::new(YOUTUBE_DL_BINARY_NAME)
         .arg("--get-thumbnail")
         .arg(video_id)
         .current_dir(here)
@@ -124,7 +125,7 @@ async fn download_video(video_id: &str, output_directory: &Path) -> Result<PathB
     let video_name = video_title(video_id).await?;
     let output_path = output_directory.join(format!("{}.mp4", video_name));
 
-    let res = Command::new("youtube-dl")
+    let res = Command::new(YOUTUBE_DL_BINARY_NAME)
         .arg("--format")
         .arg("mp4")
         .arg("--output")

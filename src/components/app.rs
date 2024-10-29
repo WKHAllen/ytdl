@@ -26,17 +26,21 @@ pub fn App() -> Element {
     let mut dep_fetch_status = use_signal(|| DepFetchStatus::Pending);
 
     use_future(move || async move {
-        match youtube_dl_binary_exists() {
-            Ok(exists) => {
-                if !exists {
-                    match fetch_youtube_dl_binary().await {
-                        Ok(_) => dep_fetch_status.set(DepFetchStatus::Completed),
-                        Err(err) => dep_fetch_status.set(DepFetchStatus::Failed(Rc::new(err))),
-                    }
-                } else {
-                    dep_fetch_status.set(DepFetchStatus::Completed);
-                }
+        let res = async move {
+            if !ffmpeg_binary_exists()? {
+                fetch_ffmpeg_binary().await?;
             }
+
+            if !youtube_dl_binary_exists()? {
+                fetch_youtube_dl_binary().await?;
+            }
+
+            Ok(())
+        }
+        .await;
+
+        match res {
+            Ok(_) => dep_fetch_status.set(DepFetchStatus::Completed),
             Err(err) => dep_fetch_status.set(DepFetchStatus::Failed(Rc::new(err))),
         }
     });
