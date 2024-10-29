@@ -2,18 +2,8 @@
 //! downloading.
 
 use crate::classes::*;
+use crate::types::*;
 use dioxus::prelude::*;
-
-/// The content type.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum ContentType {
-    /// The video thumbnail.
-    Thumbnail,
-    /// The audio of the video.
-    Audio,
-    /// The entire video, with audio.
-    Video,
-}
 
 /// A component to enable selection between video, audio, and thumbnail
 /// downloading.

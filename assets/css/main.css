@@ -468,3 +468,7 @@ input[type="file"].output-directory-selector-input {
   flex-grow: 1;
   font-size: 1.125em;
 }
+
+.download-status {
+  font-size: 0.9em;
+}

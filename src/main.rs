@@ -14,6 +14,7 @@ mod components;
 mod constants;
 mod hooks;
 mod services;
+mod types;
 
 use crate::components::App;
 use crate::constants::*;

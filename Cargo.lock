@@ -5390,6 +5390,7 @@ dependencies = [
  "image",
  "rand 0.8.5",
  "reqwest",
+ "tempfile",
  "tokio",
  "winres",
 ]
