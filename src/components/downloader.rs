@@ -3,9 +3,10 @@
 use crate::components::{
     Button, ButtonStyle, ContentTypeSelector, OutputDirectorySelector, TextInput,
 };
-use crate::services::{download, parse_video_url};
-use crate::types::*;
+use crate::constants::*;
+use crate::services::{download, parse_video_url, Config};
 use dioxus::prelude::*;
+use tokio::time::sleep;
 
 /// The status of a download operation.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Hash)]
@@ -23,20 +24,14 @@ enum DownloadStatus {
 
 /// Download configuration and trigger component.
 #[component]
-pub fn Downloader() -> Element {
-    let video_url = use_signal(|| "https://www.youtube.com/watch?v=dQw4w9WgXcQ".to_owned());
-    let content_type = use_signal(|| ContentType::Video);
-    let output_directory = use_signal(|| {
-        home::home_dir().map(|path| {
-            let downloads_path = path.join("Downloads");
+pub fn Downloader(
+    /// The application configuration state.
+    config: Config,
+) -> Element {
+    let video_url = use_signal(|| config.video_url);
+    let content_type = use_signal(|| config.content_type);
+    let output_directory = use_signal(|| config.output_directory);
 
-            if downloads_path.exists() {
-                downloads_path
-            } else {
-                path
-            }
-        })
-    });
     let mut status = use_signal(DownloadStatus::default);
 
     let video_url_value = video_url();
@@ -50,6 +45,35 @@ pub fn Downloader() -> Element {
     let allow_download = video_id.is_some()
         && output_directory().is_some()
         && !matches!(status(), DownloadStatus::Running);
+
+    let mut save_task = use_signal(|| None);
+
+    let save_config = move |video_url, content_type, output_directory| {
+        spawn(async move {
+            let _ = Config {
+                video_url,
+                content_type,
+                output_directory,
+            }
+            .save()
+            .await;
+        });
+    };
+
+    use_effect(move || {
+        let video_url = video_url();
+        let content_type = content_type();
+        let output_directory = output_directory();
+
+        let previous_task = save_task.replace(Some(spawn(async move {
+            sleep(SAVE_CONFIG_SLEEP_DURATION).await;
+            save_config(video_url, content_type, output_directory);
+        })));
+
+        if let Some(task) = previous_task {
+            task.cancel();
+        }
+    });
 
     let perform_download = move |_| {
         let video_id = video_id.clone();

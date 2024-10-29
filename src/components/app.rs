@@ -15,7 +15,7 @@ enum DepFetchStatus {
     /// Currently fetching dependencies.
     Pending,
     /// Fetching dependencies completed successfully.
-    Completed,
+    Completed(Config),
     /// Fetching dependencies failed with a provided error.
     Failed(Rc<Error>),
 }
@@ -35,12 +35,12 @@ pub fn App() -> Element {
                 fetch_youtube_dl_binary().await?;
             }
 
-            Ok(())
+            Config::load().await
         }
         .await;
 
         match res {
-            Ok(_) => dep_fetch_status.set(DepFetchStatus::Completed),
+            Ok(config) => dep_fetch_status.set(DepFetchStatus::Completed(config)),
             Err(err) => dep_fetch_status.set(DepFetchStatus::Failed(Rc::new(err))),
         }
     });
@@ -60,8 +60,10 @@ pub fn App() -> Element {
                         text: "Installing application dependencies..."
                     }
                 },
-                DepFetchStatus::Completed => rsx! {
-                    Downloader { }
+                DepFetchStatus::Completed(config) => rsx! {
+                    Downloader {
+                        config: config,
+                    }
                 },
                 DepFetchStatus::Failed(err) => rsx! {
                     Error {

@@ -1,7 +1,7 @@
 //! API interfacing with the youtube-dl binary.
 
 use crate::constants::YOUTUBE_DL_BINARY_NAME;
-use crate::types::*;
+use crate::{types::*, FFMPEG_BINARY_NAME};
 use anyhow::Result;
 use image::ImageReader;
 use std::env::current_exe;
@@ -99,7 +99,7 @@ async fn download_audio(video_id: &str, output_directory: &Path) -> Result<PathB
         .into_owned();
     let output_path = output_directory.join(video_name);
 
-    let res = Command::new("ffmpeg")
+    let res = Command::new(FFMPEG_BINARY_NAME)
         .arg("-i")
         .arg(&video_path)
         .arg(&output_path)

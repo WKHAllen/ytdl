@@ -174,10 +174,10 @@ h1 {
   border: var(--focus-border);
 }
 
-.text-input-invalid,
+/* .text-input-invalid,
 .text-input-invalid:focus {
   border: var(--error-border);
-}
+} */
 
 .text-input-container-disabled .text-input {
   color: var(--text-input-text-color-disabled);

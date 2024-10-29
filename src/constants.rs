@@ -1,6 +1,7 @@
 //! Global application constants.
 
 use const_format::concatcp;
+use std::time::Duration;
 
 /// Whether this is a debug build.
 pub const DEBUG: bool = cfg!(debug_assertions);
@@ -37,3 +38,9 @@ pub const YOUTUBE_DL_BINARY_URL: &str = concatcp!(
     "https://github.com/ytdl-org/ytdl-nightly/releases/download/2024.08.07/",
     YOUTUBE_DL_BINARY_NAME
 );
+
+/// The name of the configuration file.
+pub const CONFIG_FILE_NAME: &str = "config.json";
+
+/// The duration of time to wait before saving the configuration file.
+pub const SAVE_CONFIG_SLEEP_DURATION: Duration = Duration::from_secs(2);
