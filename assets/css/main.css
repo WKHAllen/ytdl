@@ -472,3 +472,13 @@ input[type="file"].output-directory-selector-input {
 .download-status {
   font-size: 0.9em;
 }
+
+.download-status-running {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.download-status-running-spinner {
+  padding: 8px;
+}

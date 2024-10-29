@@ -1,7 +1,8 @@
 //! Download orchestration component.
 
 use crate::components::{
-    Button, ButtonStyle, ContentTypeSelector, OutputDirectorySelector, TextInput,
+    Button, ButtonStyle, ContentTypeSelector, Loading, LoadingSpinnerSize, OutputDirectorySelector,
+    TextInput,
 };
 use crate::constants::*;
 use crate::services::{download, parse_video_url, Config};
@@ -165,7 +166,18 @@ pub fn Downloader(
                             span { }
                         },
                         DownloadStatus::Running => rsx! {
-                            span { "Performing download..." }
+                            div {
+                                class: "download-status-running",
+
+                                Loading {
+                                    size: LoadingSpinnerSize::Small,
+                                    class: "download-status-running-spinner",
+                                }
+
+                                span {
+                                    "Performing download..."
+                                }
+                            }
                         },
                         DownloadStatus::Success(message) => rsx! {
                             span { "{message}" }
