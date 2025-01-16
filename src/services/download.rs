@@ -52,11 +52,22 @@ async fn video_title(video_id: &str) -> Result<String> {
     }
 }
 
+/// Returns the title of the requested video, but with special characters
+/// replaced with underscores.
+async fn filename_video_title(video_id: &str) -> Result<String> {
+    video_title(video_id).await.map(|title| {
+        title
+            .chars()
+            .map(|c| if c.is_ascii_alphanumeric() { c } else { '_' })
+            .collect()
+    })
+}
+
 /// Downloads the requested video using the youtube-dl binary.
 async fn download_thumbnail(video_id: &str, output_directory: &Path) -> Result<PathBuf> {
     let current = current_exe()?;
     let here = current.parent().unwrap_or(Path::new("."));
-    let video_name = video_title(video_id).await?;
+    let video_name = filename_video_title(video_id).await?;
     let output_path = output_directory.join(format!("{}.png", video_name));
 
     let res = Command::new(YOUTUBE_DL_BINARY_NAME)
@@ -122,7 +133,7 @@ async fn download_audio(video_id: &str, output_directory: &Path) -> Result<PathB
 async fn download_video(video_id: &str, output_directory: &Path) -> Result<PathBuf> {
     let current = current_exe()?;
     let here = current.parent().unwrap_or(Path::new("."));
-    let video_name = video_title(video_id).await?;
+    let video_name = filename_video_title(video_id).await?;
     let output_path = output_directory.join(format!("{}.mp4", video_name));
 
     let res = Command::new(YOUTUBE_DL_BINARY_NAME)

@@ -4,12 +4,31 @@ use crate::constants::*;
 use anyhow::Result;
 use futures_util::StreamExt;
 use std::env::current_exe;
+use std::fmt::Display;
 use std::path::{Path, PathBuf};
 use tempfile::{tempfile, TempDir};
 use tokio::fs::{self, File};
 use tokio::io::{AsyncSeekExt, AsyncWriteExt};
+use tokio::process::Command;
 use tokio::task::spawn_blocking;
 use zip::ZipArchive;
+
+/// An error occurring during a dependency operation.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct DepError {
+    /// A description of the error.
+    description: String,
+    /// The output of the operation.
+    output: String,
+}
+
+impl Display for DepError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}: {}", self.description, self.output)
+    }
+}
+
+impl std::error::Error for DepError {}
 
 /// Returns the path to the ffmpeg binary.
 fn ffmpeg_binary_path() -> Result<PathBuf> {
@@ -72,4 +91,26 @@ pub async fn fetch_youtube_dl_binary() -> Result<()> {
     let bytes = reqwest::get(YOUTUBE_DL_BINARY_URL).await?.bytes().await?;
     fs::write(youtube_dl_binary_path()?, bytes).await?;
     Ok(())
+}
+
+/// Updates the youtube-dl binary.
+pub async fn update_youtube_dl_binary() -> Result<()> {
+    let current = current_exe()?;
+    let here = current.parent().unwrap_or(Path::new("."));
+
+    let res = Command::new(YOUTUBE_DL_BINARY_NAME)
+        .arg("-U")
+        .current_dir(here)
+        .output()
+        .await?;
+
+    if res.status.success() {
+        Ok(())
+    } else {
+        Err(DepError {
+            description: "failed to update youtube-dl binary".to_owned(),
+            output: String::from_utf8_lossy(&res.stderr).into_owned(),
+        }
+        .into())
+    }
 }

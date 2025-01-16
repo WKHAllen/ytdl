@@ -33,6 +33,8 @@ pub fn App() -> Element {
 
             if !youtube_dl_binary_exists()? {
                 fetch_youtube_dl_binary().await?;
+            } else {
+                update_youtube_dl_binary().await?;
             }
 
             Config::load().await
@@ -57,7 +59,7 @@ pub fn App() -> Element {
                 DepFetchStatus::Pending => rsx! {
                     Loading {
                         class: "dep-fetch-status-pending",
-                        text: "Installing application dependencies..."
+                        text: "Installing/updating application dependencies..."
                     }
                 },
                 DepFetchStatus::Completed(config) => rsx! {
@@ -68,7 +70,7 @@ pub fn App() -> Element {
                 DepFetchStatus::Failed(err) => rsx! {
                     Error {
                         class: "dep-fetch-status-failed",
-                        description: "An error occurred while installing application dependencies:",
+                        description: "An error occurred while installing/updating application dependencies:",
                         message: err
                     }
                 }
