@@ -1,7 +1,7 @@
 //! API interfacing with the youtube-dl binary.
 
-use crate::constants::YOUTUBE_DL_BINARY_NAME;
-use crate::{types::*, FFMPEG_BINARY_NAME};
+use crate::constants::{CREATE_NO_WINDOW_FLAG, FFMPEG_BINARY_NAME, YOUTUBE_DL_BINARY_NAME};
+use crate::types::*;
 use anyhow::Result;
 use image::ImageReader;
 use std::env::current_exe;
@@ -34,12 +34,15 @@ async fn video_title(video_id: &str) -> Result<String> {
     let current = current_exe()?;
     let here = current.parent().unwrap_or(Path::new("."));
 
-    let res = Command::new(YOUTUBE_DL_BINARY_NAME)
-        .arg("--get-title")
-        .arg(video_id)
-        .current_dir(here)
-        .output()
-        .await?;
+    let mut cmd = Command::new(YOUTUBE_DL_BINARY_NAME);
+    cmd.arg("--get-title").arg(video_id);
+
+    #[cfg(windows)]
+    {
+        cmd.creation_flags(CREATE_NO_WINDOW_FLAG);
+    }
+
+    let res = cmd.current_dir(here).output().await?;
 
     if res.status.success() {
         Ok(String::from_utf8(res.stdout)?.trim().to_owned())
@@ -70,12 +73,15 @@ async fn download_thumbnail(video_id: &str, output_directory: &Path) -> Result<P
     let video_name = filename_video_title(video_id).await?;
     let output_path = output_directory.join(format!("{}.png", video_name));
 
-    let res = Command::new(YOUTUBE_DL_BINARY_NAME)
-        .arg("--get-thumbnail")
-        .arg(video_id)
-        .current_dir(here)
-        .output()
-        .await?;
+    let mut cmd = Command::new(YOUTUBE_DL_BINARY_NAME);
+    cmd.arg("--get-thumbnail").arg(video_id);
+
+    #[cfg(windows)]
+    {
+        cmd.creation_flags(CREATE_NO_WINDOW_FLAG);
+    }
+
+    let res = cmd.current_dir(here).output().await?;
 
     if res.status.success() {
         let video_thumbnail_url = String::from_utf8(res.stdout)?.trim().to_owned();
@@ -110,13 +116,15 @@ async fn download_audio(video_id: &str, output_directory: &Path) -> Result<PathB
         .into_owned();
     let output_path = output_directory.join(video_name);
 
-    let res = Command::new(FFMPEG_BINARY_NAME)
-        .arg("-i")
-        .arg(&video_path)
-        .arg(&output_path)
-        .current_dir(here)
-        .output()
-        .await?;
+    let mut cmd = Command::new(FFMPEG_BINARY_NAME);
+    cmd.arg("-i").arg(&video_path).arg(&output_path);
+
+    #[cfg(windows)]
+    {
+        cmd.creation_flags(CREATE_NO_WINDOW_FLAG);
+    }
+
+    let res = cmd.current_dir(here).output().await?;
 
     if res.status.success() {
         Ok(output_path)
@@ -136,15 +144,19 @@ async fn download_video(video_id: &str, output_directory: &Path) -> Result<PathB
     let video_name = filename_video_title(video_id).await?;
     let output_path = output_directory.join(format!("{}.mp4", video_name));
 
-    let res = Command::new(YOUTUBE_DL_BINARY_NAME)
-        .arg("--format")
+    let mut cmd = Command::new(YOUTUBE_DL_BINARY_NAME);
+    cmd.arg("--format")
         .arg("mp4")
         .arg("--output")
         .arg(&output_path)
-        .arg(video_id)
-        .current_dir(here)
-        .output()
-        .await?;
+        .arg(video_id);
+
+    #[cfg(windows)]
+    {
+        cmd.creation_flags(CREATE_NO_WINDOW_FLAG);
+    }
+
+    let res = cmd.current_dir(here).output().await?;
 
     if res.status.success() {
         Ok(output_path)

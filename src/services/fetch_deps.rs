@@ -98,11 +98,15 @@ pub async fn update_youtube_dl_binary() -> Result<()> {
     let current = current_exe()?;
     let here = current.parent().unwrap_or(Path::new("."));
 
-    let res = Command::new(YOUTUBE_DL_BINARY_NAME)
-        .arg("-U")
-        .current_dir(here)
-        .output()
-        .await?;
+    let mut cmd = Command::new(YOUTUBE_DL_BINARY_NAME);
+    cmd.arg("-U");
+
+    #[cfg(windows)]
+    {
+        cmd.creation_flags(CREATE_NO_WINDOW_FLAG);
+    }
+
+    let res = cmd.current_dir(here).output().await?;
 
     if res.status.success() {
         Ok(())

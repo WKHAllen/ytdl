@@ -44,3 +44,7 @@ pub const CONFIG_FILE_NAME: &str = "config.json";
 
 /// The duration of time to wait before saving the configuration file.
 pub const SAVE_CONFIG_SLEEP_DURATION: Duration = Duration::from_secs(2);
+
+/// Process creation flag so Windows won't create a cmd window when invoking
+/// external binaries.
+pub const CREATE_NO_WINDOW_FLAG: u32 = 0x08000000;
