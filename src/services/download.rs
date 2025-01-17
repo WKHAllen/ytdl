@@ -1,6 +1,6 @@
 //! API interfacing with the youtube-dl binary.
 
-use crate::constants::{CREATE_NO_WINDOW_FLAG, FFMPEG_BINARY_NAME, YOUTUBE_DL_BINARY_NAME};
+use crate::constants::*;
 use crate::types::*;
 use anyhow::Result;
 use image::ImageReader;

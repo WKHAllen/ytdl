@@ -47,4 +47,5 @@ pub const SAVE_CONFIG_SLEEP_DURATION: Duration = Duration::from_secs(2);
 
 /// Process creation flag so Windows won't create a cmd window when invoking
 /// external binaries.
+#[cfg(windows)]
 pub const CREATE_NO_WINDOW_FLAG: u32 = 0x08000000;
